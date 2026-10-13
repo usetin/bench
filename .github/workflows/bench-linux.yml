@@ -102,6 +102,7 @@ jobs:
         run: sudo apt-get update -q && sudo apt-get install -y -q wrk nghttp2-client
       - name: Build each revision from its own seed and source tree
         run: |
+          mkdir -p bin
           make -C tin bootstrap
           make -C tin-base bootstrap
       - name: Inline threshold sweep (native Linux)
