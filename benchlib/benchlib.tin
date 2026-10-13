@@ -3,7 +3,7 @@
 // native Linux (toolchain/docs/PERFORMANCE.md).
 package benchlib
 
-import "../../tools/ci/ci"
+import "../tools/ci/ci"
 import "mint"
 import "quarry"
 import "say"
@@ -156,13 +156,22 @@ fn Interleaved(names []str, commands []Command, runs i64, checkOutput bool, run 
 	return Result{Names: names, Medians: medians, Samples: samples}
 }
 
-// TinCommand compiles the source with the tree at root (its compiler, or the one given) into output.
+// TinRoot is the tin checkout the suite builds with (TIN_ROOT, default ../tin).
+fn TinRoot() str {
+	return ci.TinRoot()
+}
+
+// TinCommand compiles the source with the tin tree at root (its compiler, or the one given) into output.
 fn TinCommand(root str, source str, output str, compiler str) Command {
-	mut tinc = ci.Join(root, "bin/tinc")
+	mut tree = root
+	if len(tree) == 0 {
+		tree = ci.TinRoot()
+	}
+	mut tinc = ci.Join(tree, "bin/tinc")
 	if len(compiler) > 0 {
 		tinc = compiler
 	}
-	return Command{Argv: []str{tinc, "-o", output, source}, Dir: root, Set: []str{"TIN_ROOT=" + root, "LC_ALL=C"}}
+	return Command{Argv: []str{tinc, "-o", output, source}, Dir: tree, Set: []str{"TIN_ROOT=" + tree, "LC_ALL=C"}}
 }
 
 // BenchmarkNames are the names of the *.tin files of the directory (or the selected ones among them); it fails for an unknown name or none.

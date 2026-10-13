@@ -1,6 +1,6 @@
 package main
 
-import "../tools/ci/ci"
+import "./tools/ci/ci"
 import "./benchlib"
 import "mint"
 import "quarry"
@@ -28,7 +28,7 @@ fn main() {
 	mut baseRoot = ""
 	mut headRoot = root
 	mut suite = "cpu"
-	mut benchDir = ci.Join(root, "bench/v2")
+	mut benchDir = ci.Join(root, "v2")
 	mut runs = 7
 	mut rounds = 5
 	mut seconds = 10
@@ -108,7 +108,7 @@ fn main() {
 				ci.Fail("unreachable")
 			}
 		}
-		mut command = []str{"sh", "tools/ci/tin.sh", "bench/http/run_wrk.tin", "1", "2", "100", mint.Itoa(seconds), mint.Itoa(rounds), "--base-api", ci.Join(work, "base"), "--head-api", ci.Join(work, "head")}
+		mut command = []str{"sh", "tools/ci/tin.sh", "http/run_wrk.tin", "1", "2", "100", mint.Itoa(seconds), mint.Itoa(rounds), "--base-api", ci.Join(work, "base"), "--head-api", ci.Join(work, "head")}
 		if len(jsonPath) > 0 {
 			command = append(command, "--json")
 			command = append(command, resolve(jsonPath))

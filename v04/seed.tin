@@ -1,6 +1,6 @@
 package main
 
-import "../../tools/ci/ci"
+import "../tools/ci/ci"
 import "mint"
 import "quarry"
 import "say"

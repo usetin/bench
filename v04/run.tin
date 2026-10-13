@@ -1,7 +1,7 @@
 package main
 
-import "../../tools/ci/ci"
-import "../../tools/ci/nettest"
+import "../tools/ci/ci"
+import "../tools/ci/nettest"
 import "../benchlib"
 import "mint"
 import "say"
@@ -101,7 +101,7 @@ fn micros(v str) f64 {
 }
 
 fn wrk2(wrk str, cpus str, threads str, conns i64, port i64, s Scenario, rate i64, secs i64) Run {
-	let here = ci.Join(ci.Root(), "bench/v04")
+	let here = ci.Join(ci.Root(), "v04")
 	let argv = pinned(cpus, []str{wrk, "-t" + threads, "-c" + mint.Itoa(conns), "-d" + mint.Itoa(secs) + "s", "-R" + mint.Itoa(rate), "--latency", "-s", ci.Join(here, "mix.lua"), "http://127.0.0.1:" + mint.Itoa(port), "--", s.Prefix, s.Slow})
 	let o = ci.Exec(argv, "", secs + 120)
 	let out = o.Stdout
@@ -182,8 +182,8 @@ fn main() {
 	ci.Check(len(wrk) > 0, "set WRK2 to a wrk2 binary")
 	let redisAddr = ci.Env("REDIS_ADDR")
 	ci.Check(len(redisAddr) > 0, "set REDIS_ADDR")
-	ci.BuildTin("bench/v04/users.tin", ci.Join(outDir, "users_tin"), "", []str{})
-	ci.Must(ci.Exec([]str{"go", "build", "-o", ci.Join(outDir, "users_go"), "."}, ci.Join(root, "bench/v04/go"), 600), "go build")
+	ci.BuildTin("v04/users.tin", ci.Join(outDir, "users_tin"), "", []str{})
+	ci.Must(ci.Exec([]str{"go", "build", "-o", ci.Join(outDir, "users_go"), "."}, ci.Join(root, "v04/go"), 600), "go build")
 	redis(redisAddr, []str{"CONFIG", "SET", "save", ""})
 	let scenarios = []Scenario{Scenario{Name: "cached", Prefix: "/users/", Slow: "0"}, Scenario{Name: "db", Prefix: "/db/users/", Slow: "0"}, Scenario{Name: "mixed", Prefix: "/users/", Slow: "0.5"}}
 	let names = []str{"tin", "go"}

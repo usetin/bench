@@ -1,6 +1,6 @@
 package main
 
-import "../tools/ci/ci"
+import "./tools/ci/ci"
 import "./benchlib"
 import "mint"
 import "quarry"
@@ -31,7 +31,7 @@ fn main() {
 		i += 1
 	}
 	let root = ci.Root()
-	let directory = ci.Join(root, benchlib.Env("BENCH_DIR", "bench"))
+	let directory = ci.Join(root, benchlib.Env("BENCH_DIR", "v2"))
 	let runs = ci.Num(benchlib.Env("RUNS", "7"))
 	if runs < 7 {
 		say.Line("RUNS must be at least 7")
@@ -42,7 +42,8 @@ fn main() {
 		quarry.Exit(2)
 		return
 	}
-	ci.Must(ci.Exec([]str{"make", "-s", "bin/tinc"}, root, 600), "make bin/tinc")
+	let tinRoot = benchlib.TinRoot()
+	ci.Must(ci.Exec([]str{"make", "-s", "-C", tinRoot, "bin/tinc"}, root, 600), "make bin/tinc in " + tinRoot)
 	let output = ci.Join(root, "bin/bench")
 	ci.Mkdirs(output)
 	let tmp = ci.TempDir(output, "reference-")
@@ -52,7 +53,7 @@ fn main() {
 	for name in names {
 		let tinExe = ci.Join(tmp, name + "_tin")
 		let goExe = ci.Join(tmp, name + "_go")
-		let builds = []benchlib.Command{benchlib.TinCommand(root, ci.Join(directory, name + ".tin"), tinExe, ""), benchlib.Command{Argv: []str{"go", "-C", directory, "build", "-o", goExe, name + ".go"}, Dir: "", Set: []str{"TIN_POOL_WARN_MB=0"}}}
+		let builds = []benchlib.Command{benchlib.TinCommand(tinRoot, ci.Join(directory, name + ".tin"), tinExe, ""), benchlib.Command{Argv: []str{"go", "-C", directory, "build", "-o", goExe, name + ".go"}, Dir: "", Set: []str{"TIN_POOL_WARN_MB=0"}}}
 		let build = benchlib.Interleaved([]str{"tin", "go"}, builds, 3, false, benchlib.DefaultRunner()) catch err {
 			ci.Fail(say.Str(err))
 			panic("unreachable")

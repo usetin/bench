@@ -1,7 +1,7 @@
 // The pieces of the HTTPS benchmarks: certificates made per run with openssl, a probe that waits for a TLS 1.3 answer, and wrk's report.
 package httpsbench
 
-import "../../../tools/ci/ci"
+import "../../tools/ci/ci"
 import "mint"
 import "say"
 import "tide"

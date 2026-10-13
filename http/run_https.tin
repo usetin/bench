@@ -1,7 +1,7 @@
 package main
 
-import "../../tools/ci/ci"
-import "../../tools/ci/nettest"
+import "../tools/ci/ci"
+import "../tools/ci/nettest"
 import "../benchlib"
 import "./httpsbench"
 import "mint"
