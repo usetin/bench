@@ -1,6 +1,6 @@
 #!/bin/sh
 # Usage: bench/http/run_pipelined.sh "CORES..." — wrk with 16 pipelined requests per write.
-cd "$(dirname "$0")/../.." || exit 1
+cd "$(dirname "$0")/.." || exit 1
 for cores in ${1:-1 2 4}; do
   for route in /plaintext /json; do
     for srv in anvil fasthttp net/http; do
